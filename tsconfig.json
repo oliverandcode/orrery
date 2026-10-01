@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    // Target modern JavaScript that Node 22 understands natively
+    "target": "ES2022",
+
+    // Use ES module syntax (import/export) throughout the project
+    "module": "NodeNext",
+
+    // Tell TypeScript how to resolve ES module imports
+    "moduleResolution": "NodeNext",
+
+    // Where compiled JavaScript files will be written
+    "outDir": "./dist",
+
+    // Where TypeScript source files live
+    "rootDir": "./src",
+
+    // Strict mode enables the full suite of TypeScript's type-checking rules.
+    // This catches the most bugs and is considered best practice for new projects.
+    "strict": true,
+
+    // Require explicit return types and parameter types everywhere.
+    // Keeps the codebase self-documenting and prevents accidental `any` types.
+    "noImplicitAny": true,
+
+    // Ensure consistent file name casing across operating systems
+    "forceConsistentCasingInFileNames": true,
+
+    // Emit proper source maps so error stack traces point to .ts files, not .js
+    "sourceMap": true,
+
+    // Allow importing JSON files directly (useful for config and seed data)
+    "resolveJsonModule": true,
+
+    // Ensure each file is treated as an isolated module (required for some tooling)
+    "isolatedModules": true,
+
+    // Skip type-checking of third-party .d.ts files for faster compilation
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
