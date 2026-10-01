@@ -16,7 +16,7 @@ integration, and a user interface.
 
 ### A Note On Orreries
 
-An (ORRERY)[https://en.wikipedia.org/wiki/Orrery] is a mechanical model of the solar system that illustrates or predicts the relative positions and motions of the planets and moons. The term is derived from a device produced circa 1712 by John Rowley and named for his patron Charles Boyle, 4th Earl of Orrery. Orreries are typically driven by a clockwork mechanism with a globe representing the sun at the center, and with a planet at the end of each of a series of arms. 
+An [ORRERY](https://en.wikipedia.org/wiki/Orrery) is a mechanical model of the solar system that illustrates or predicts the relative positions and motions of the planets and moons. The term is derived from a device produced circa 1712 by John Rowley and named for his patron Charles Boyle, 4th Earl of Orrery. Orreries are typically driven by a clockwork mechanism with a globe representing the sun at the center, and with a planet at the end of each of a series of arms. 
 
 Since this app aims to be a model of another solar system, used to illustrate or predict the relative positions and motions of the planets and other bodies in that system, it is in a sense a "digital orrery." Calculating astrological charts for planets outside Earth's solar system is a whimsical exercise with little practical value but a lot to delight the mind; in the era of publicly available NASA data on the positions of the celestial bodies, a literal mechanical orrery has little practical value, but a lot of whimsy. 
 
