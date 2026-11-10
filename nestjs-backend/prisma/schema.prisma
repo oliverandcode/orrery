@@ -132,9 +132,10 @@ model Chart {
 
     // relations
 
-    transits    Transit[]
+    transits            Transit[]
 
-    // user
+    userId              String
+    user                User    @relation(fields: [userId], references: [id])
 }
 
 model Transit {
@@ -171,7 +172,7 @@ model User {
 
     // relations
 
-    // charts
+    charts              Chart[]
 }
 
 /** 
