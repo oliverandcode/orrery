@@ -11,30 +11,167 @@ generator pothos {
     prismaUtils = true
 }
 
+enum CelestialBodyType {
+    LUMINARY
+    PLANET
+    /** later enums, maybe: 
+    *   - ASTEROID
+    *   - CALCULATED_POINT (nodes, apogees, etc)
+    */
+}
+
+enum ClassicalElement {
+    AIR
+    EARTH
+    FIRE
+    WATER
+}
+
+enum Modality {
+    CARDINAL
+    FIXED
+    MUTABLE
+}
+
+enum AspectType {   // ordered by degree
+    CONJUNCTION     // 0º       MAJOR
+    SEMISEXTILE     // 30º      minor
+    SEMISQUARE      // 45º      minor
+    SEXTILE         // 60º      MAJOR
+    QUINTILE        // 72º      minor
+    SQUARE          // 90º      MAJOR
+    TRINE           // 120º     MAJOR
+    SESQUIQUADRATE  // 135º     minor
+    BIQUINTILE      // 144º     minor
+    QUINCUNX        // 150º     minor
+    OPPOSITION      // 180º     MAJOR
+}
+
+model CelestialBody {
+    id                  String              @id @default(cuid())
+    name                String              @unique
+    type                CelestialBodyType
+    astroLore           String              // astrological role
+    astroData           String              // astronomical description
+                                            // (esp. observable characteristics from the surface of TRAPPIST-1e)
+
+    // relations
+
+    // domicile                ZodiacSign?
+
+    // interpretations         Interpretation[]    @relation("BodyInterpretations")
+    // aspectInterpretations   Interpretation[]    @relation("AspectedBodyInterpretations")
+}
+
+model ZodiacSign {
+    id              String              @id @default(cuid())
+    name            String              @unique
+    number          Int                 @unique
+    startLongitude  Float               @unique
+    astroLore       String              // astrological archetype
+    astroData       String              // astronomical description (i.e. star configuration)
+    element         ClassicalElement
+    mode            Modality
+
+    // relations
+
+    // ruler           CelestialBody       @relation(fields: [rulerId], references: [id])
+    // rulerId         String              @unique
+
+    // interpretations Interpretation[]    @relation("SignInterpretations")
+}
+
+model House {
+    id          String  @id @default(cuid())
+    number      Int     @unique
+    startAngle  Float   @unique
+    astroLore   String  // astrological domain
+
+    // relations
+
+    // interpretations Interpretation[]    @relation("HouseInterpretations")
+}
+
+model Star {
+    id                  String  @id @default(cuid())
+    gaiaDr3Id           String  @unique     // Gaia Star Catalogue DR3 ID
+    name                String?
+    eclipticLongitude   Float
+    eclipticLatitude    Float
+    apparentMagnitude   Float
+
+    // relations
+}
+
+model Chart {
+    id                  String      @id @default(cuid())
+    dateOnly            DateTime    @db.Date
+    timeOnly            DateTime    @db.Time    // users may not know time of day
+    planetaryLatitude   Float
+    planetaryLongitude  Float
+    createdAt           DateTime    @default(now())
+    updatedAt           DateTime    @updatedAt
+
+    // relations
+}
+
+
 model User {
-    id                  Int     @id @default(autoincrement())
+    id                  String  @id @default(cuid())
     email               String  @unique
     name                String?
-    posts               Post[]
-    comments            Comment[]
-    encryptedPassword   String?
+    password            String?
 }
 
-model Post {
-    id          Int @id @default(autoincrement())
-    title       String
-    content     String?
-    published   Boolean? @default(false)
-    author      User @relation(fields: [authorId], references: [id])
-    authorId    Int
-    comments    Comment[]
-}
-
-model Comment {
-    id          Int @id @default(autoincrement())
-    author      User @relation(fields: [authorId], references: [id])
-    authorId    Int
-    post        Post @relation(fields: [postId], references: [id])
-    postId      Int
-    comment     String
-}
+/** 
+* naming descriptive text in each table
+*
+* UNIFIED OPTION (all models):  
+*   - astro_lore & astro_data 
+*           • favorite option
+*           • risk of autocomplete confusion
+*   - lore_astro & data_astro 
+*           • won't get confused with autocomplete
+*   - mythic_meaning & space_specs
+*           • no autocomplete confusion
+*           • also no star trek reference :(
+*
+* DISTINCT FIELD NAMES
+*
+* Mythological
+*
+* celestial bodies  (WHO/WHAT): role
+* zodiac signs      (HOW):      archetype
+* houses            (WHERE):    domain
+*
+* Astronomical
+*
+* bodies:   observable_traits
+* signs:    star_configuration
+* houses:   no field needed (probably)
+*
+* bodies:   description of physical characteristics and orbit/behavior, with
+*           particular focus on observable traits from TRAPPIST-1e POV
+*           - specs, space_specs (specs is short for specifications, which is technically inaccurate)
+*           - mechanics (might not cover everything)
+*           - observable (might not cover everything)
+*           - stats, space_stats, physical_stats (maybe?)
+*           - system_stats (maybe?)
+*
+* signs:    description of the stars/constellations in each ecliptic segment,
+*           still figuring this out (have not "drawn" the constellations yet)
+*           - specs (technically inaccurate)
+*           - stats (this sounds like it's the ecliptic boundaries etc)
+*           - data, astro_data
+*
+* houses:   this is fixed based on planetary position/time of year, so it may 
+*           not need an astronomical description. however, the first house 
+*           (eastern horizon) still moves through the signs, and maybe this 
+*           is where we can explain how TRAPPIST-1e is tidally locked.
+*
+* what do we call the picture each constellation is supposed to draw?
+* i've been considering naming them all after pop stars
+*       - symbol*
+*       - image
+*       - archetype
+*/
