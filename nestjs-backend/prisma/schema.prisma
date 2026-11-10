@@ -15,13 +15,13 @@ generator pothos {
 // immutable slugs for use in Interpretation table key matching
 enum EntitySlug {
     // Celestial Bodies
-    BODY_SUN
-    BODY_B
-    BODY_C
-    BODY_D
-    BODY_F
-    BODY_G
-    BODY_H
+    TRAPPIST_1_SUN
+    TRAPPIST_1B
+    TRAPPIST_1C
+    TRAPPIST_1D
+    TRAPPIST_1F
+    TRAPPIST_1G
+    TRAPPIST_1H
 
     // Zodiac signs
     SIGN_ALPHA
@@ -102,7 +102,8 @@ model User {
 
 model CelestialBody {
     id          String              @id @default(cuid())
-    name        String              @unique
+    name        String              @unique // display name
+    slug        EntitySlug          @unique // immutable human-readable reference (used in Interpretation matchKeys)
     type        CelestialBodyType
     astroLore   String              // astrological role
     astroData   String              // astronomical description
@@ -116,8 +117,9 @@ model CelestialBody {
 
 model ZodiacSign {
     id              String              @id @default(cuid())
-    name            String              @unique
-    number          Int                 @unique
+    name            String              @unique // display name
+    slug            EntitySlug          @unique // immutable human-readable reference (used in Interpretation matchKeys)
+    number          Int                 @unique // is this necessary?
     symbol          String              // e.g. The Ram, for Aries
 
     // static and absolute position on the ecliptic plane
@@ -137,9 +139,10 @@ model ZodiacSign {
 }
 
 model House {
-    id              String  @id @default(cuid())
-    number          Int     @unique
-    astroLore       String  // astrological domain
+    id              String      @id @default(cuid())
+    slug            EntitySlug  @unique // immutable human-readable reference (used in Interpretation matchKeys)
+    number          Int         @unique
+    astroLore       String      // astrological domain
 
     /*
     * The angular distance offset of the House's starting longitude
