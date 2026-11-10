@@ -57,28 +57,32 @@ model CelestialBody {
 
     // relations
 
-    positions               CalculatedPosition[]
-
-    // domicile                ZodiacSign?
+    transits                Transit[]           // the coordinates at a specific time
 
     // interpretations         Interpretation[]    @relation("BodyInterpretations")
     // aspectInterpretations   Interpretation[]    @relation("AspectedBodyInterpretations")
+
+    // domicile                ZodiacSign?         // the sign it governs
 }
 
 model ZodiacSign {
     id              String              @id @default(cuid())
     name            String              @unique
     number          Int                 @unique
+    symbol          String              // e.g. The Ram, for Aries
+
+    // static and absolute position on the ecliptic plane
     startLongitude  Float               @unique
+
     astroLore       String              // astrological archetype
     astroData       String              // astronomical description (i.e. star configuration)
-    element         ClassicalElement
-    mode            Modality
-    symbol          String              // e.g. The Ram, for Aries
+
+    // element         ClassicalElement
+    // mode            Modality
 
     // relations
 
-    positions       CalculatedPosition[]
+    transits        Transit[]           // for chart placements
 
     // interpretations Interpretation[]    @relation("SignInterpretations")
 
@@ -87,14 +91,20 @@ model ZodiacSign {
 }
 
 model House {
-    id          String  @id @default(cuid())
-    number      Int     @unique
-    startAngle  Float   @unique
-    astroLore   String  // astrological domain
+    id              String  @id @default(cuid())
+    number          Int     @unique
+    astroLore       String  // astrological domain
+
+    /** 
+    * The angular distance offset of the House's starting longitude
+    * on the ecliptic plane from the Ascendant (first house) cusp. 
+    * i.e. First House: 0, Second House: 30, Third House = 60, etc
+    */
+    ascendantOffset Float   @unique
 
     // relations
 
-    positions       CalculatedPosition[]
+    transits        Transit[]
 
     // interpretations Interpretation[]    @relation("HouseInterpretations")
 }
@@ -113,39 +123,41 @@ model Star {
 model Chart {
     id                  String      @id @default(cuid())
     dateTime            DateTime
-    planetaryLatitude   Float
-    planetaryLongitude  Float
+    planetaryLatitude   Float       // chart (birth or event) location
+    planetaryLongitude  Float       // on the planet's surface
     createdAt           DateTime    @default(now())
     updatedAt           DateTime    @updatedAt
 
+    ascendantLongitude  Float       // eastern horizon location on the ecliptic
+
     // relations
 
-    positions CalculatedPosition[]
+    transits    Transit[]
 
     // user
 }
 
-model CalculatedPosition {
-    id                  String          @id @default(cuid())
+model Transit {
+    id                      String          @id @default(cuid())
 
-    // astronomical computations
-    eclipticLongitude   Float
+    // calculated coordinates of celestial body (from the planetary perspective)
+    celestialBodyLongitude  Float
 
     // relations
 
-    // defining relationship (which chart and body)
-    chartId             String
-    chart               Chart           @relation(fields: [chartId], references: [id])
+    // defining relationship (which chart and celestial body)
+    chartId                 String
+    chart                   Chart           @relation(fields: [chartId], references: [id])
 
-    celestialBodyId     String
-    celestialBody       CelestialBody   @relation(fields: [celestialBodyId], references: [id])
+    celestialBodyId         String
+    celestialBody           CelestialBody   @relation(fields: [celestialBodyId], references: [id])
 
-    // placements
-    zodiacSignId        String
-    zodiacSign          ZodiacSign      @relation(fields: [zodiacSignId], references: [id])
+    // placements (based on bodyLongitude and ascendantLongitude)
+    zodiacSignId            String
+    zodiacSign              ZodiacSign      @relation(fields: [zodiacSignId], references: [id])
 
-    houseId             String
-    house               House           @relation(fields: [houseId], references: [id])
+    houseId                 String
+    house                   House           @relation(fields: [houseId], references: [id])
 
     @@unique([chartId, celestialBodyId])    // a planet can only have one placement per chart
 }
