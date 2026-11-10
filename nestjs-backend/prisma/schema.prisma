@@ -47,6 +47,16 @@ enum AspectType {   // ordered by degree
     OPPOSITION      // 180º     MAJOR
 }
 
+model User {
+    id                  String  @id @default(cuid())
+    email               String  @unique
+    name                String?
+    password            String?
+
+    // relations
+    charts              Chart[]
+}
+
 model CelestialBody {
     id          String              @id @default(cuid())
     name        String              @unique
@@ -56,11 +66,10 @@ model CelestialBody {
                                     // (esp. observable characteristics from the surface of TRAPPIST-1e)
 
     // relations
-
     transits                Transit[]           // the coordinates at a specific time
 
-    // interpretations         Interpretation[]    @relation("BodyInterpretations")
-    // aspectInterpretations   Interpretation[]    @relation("AspectedBodyInterpretations")
+    interpretations         Interpretation[]    @relation("BodyInterpretations")
+    aspectInterpretations   Interpretation[]    @relation("AspectedBodyInterpretations")
 
     // domicile                ZodiacSign?         // the sign it governs
 }
@@ -84,7 +93,7 @@ model ZodiacSign {
 
     transits        Transit[]           // for chart placements
 
-    // interpretations Interpretation[]    @relation("SignInterpretations")
+    interpretations Interpretation[]    @relation("SignInterpretations")
 
     // ruler           CelestialBody       @relation(fields: [rulerId], references: [id])
     // rulerId         String              @unique
@@ -106,7 +115,7 @@ model House {
 
     transits        Transit[]
 
-    // interpretations Interpretation[]    @relation("HouseInterpretations")
+    interpretations Interpretation[]    @relation("HouseInterpretations")
 }
 
 model Star {
@@ -164,15 +173,56 @@ model Transit {
 }
 
 
-model User {
-    id                  String  @id @default(cuid())
-    email               String  @unique
-    name                String?
-    password            String?
 
-    // relations
+model Interpretation { // lookup text
+    /** 
+    * Each interpretation is defined by relations with 
+    * celestial body, sign, and house. 
+    * 
+    * Aspect interpretations require 2 celestial bodies
+    * and the aspect type (calculated elsewehere).
+    * e.g. body_1_id, body_2_id, aspect_type_id
+    *
+    * v0.0: interpretation table exists
+    * v0.1: interpretations for sun in each sign (+12)
+    * v0.2: interpretations for inner planets (b, c, d) 
+    *       in each sign (+36)
+    * v0.3: interpretations for outer planets (f, g, h)
+    *       in each sign (+36)
+    * v0.4: interpretations for sun and planets in each house (+84)
+    * beyond: 
+    *   - interpretations for sun and planets in each sign/house combo (likely never complete! very large number)
+    *   - data structure added for aspect interpretations
+    *   - interpretations for major aspects (conjunction, opposition, trine, square, sextile)
+    *   - interpretations for minor aspects (quincunx, semi-sextile, semi-square, sesquiquadrate...)
+    *   - interpretations for sign-house combos (without a celestial body)
+    *
+    * 1. Check for all 3 (celestial body, sign, house).
+    * 2. Check for celestial body + sign. (MOST COMMON)
+    * 3. Check for celestial body + house.
+    * 4. Check for sign + house. (UNCOMMON)
+    */
+    id              String          @id @default(cuid())
+    title           String?         // e.g. Sun in Aries (example not applicable to this system, obviously!)
+    text            String          // the body text of the interpretation
 
-    charts              Chart[]
+    // 1. core relations
+    celestialBodyId String?
+    celestialBody   CelestialBody?  @relation("BodyInterpretations", fields: [celestialBodyId], references: [id])
+
+    zodiacSignId    String?
+    zodiacSign      ZodiacSign?     @relation("SignInterpretations", fields: [zodiacSignId], references: [id])
+
+    houseId         String?
+    house           House?          @relation("HouseInterpretations", fields: [houseId], references: [id])
+
+    // 2. aspect / complex relationship fields
+    aspectType      AspectType
+
+    aspectedBodyId  String?
+    aspectedBody    CelestialBody? @relation("AspectedBodyInterpretations", fields: [aspectedBodyId], references: [id])
+
+    @@unique([celestialBodyId, zodiacSignId, houseId, aspectType, aspectedBodyId])
 }
 
 /** 
