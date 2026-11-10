@@ -11,40 +11,67 @@ generator pothos {
     prismaUtils = true
 }
 
+// immutable slugs for use in Interpretation table key matching
+enum EntitySlug {
+    // Celestial Bodies
+    BODY_SUN
+    BODY_B
+    BODY_C
+    BODY_D
+    BODY_F
+    BODY_G
+    BODY_H
+
+    // Zodiac signs
+    SIGN_ALPHA
+    SIGN_BRAVO
+    SIGN_CHARLIE
+    SIGN_DELTA
+    SIGN_ECHO
+    SIGN_FOXTROT
+    SIGN_GOLF
+    SIGN_HOTEL
+    SIGN_INDIA
+    SIGN_JULIET
+    SIGN_KILO
+    SIGN_LIMA
+
+    // Houses
+    HOUSE_01
+    HOUSE_02
+    HOUSE_03
+    HOUSE_04
+    HOUSE_05
+    HOUSE_06
+    HOUSE_07
+    HOUSE_O8
+    HOUSE_09
+    HOUSE_10
+    HOUSE_11
+    HOUSE_12
+
+    // NOTE: future use
+    // Aspects (ordered by degree)
+    ASPECT_CONJUNCTION     // 0º       MAJOR
+    ASPECT_SEMISEXTILE     // 30º      minor
+    ASPECT_SEMISQUARE      // 45º      minor
+    ASPECT_SEXTILE         // 60º      MAJOR
+    ASPECT_QUINTILE        // 72º      minor
+    ASPECT_SQUARE          // 90º      MAJOR
+    ASPECT_TRINE           // 120º     MAJOR
+    ASPECT_SESQUIQUADRATE  // 135º     minor
+    ASPECT_BIQUINTILE      // 144º     minor
+    ASPECT_QUINCUNX        // 150º     minor
+    ASPECT_OPPOSITION      // 180º     MAJOR
+}
+
 enum CelestialBodyType {
     LUMINARY
     PLANET
     /** later enums, maybe: 
-    *   - ASTEROID
-    *   - CALCULATED_POINT (nodes, apogees, etc)
+    *   ASTEROID
+    *   CALCULATED_POINT (nodes, apogees, etc)
     */
-}
-
-enum ClassicalElement {
-    AIR
-    EARTH
-    FIRE
-    WATER
-}
-
-enum Modality {
-    CARDINAL
-    FIXED
-    MUTABLE
-}
-
-enum AspectType {   // ordered by degree
-    CONJUNCTION     // 0º       MAJOR
-    SEMISEXTILE     // 30º      minor
-    SEMISQUARE      // 45º      minor
-    SEXTILE         // 60º      MAJOR
-    QUINTILE        // 72º      minor
-    SQUARE          // 90º      MAJOR
-    TRINE           // 120º     MAJOR
-    SESQUIQUADRATE  // 135º     minor
-    BIQUINTILE      // 144º     minor
-    QUINCUNX        // 150º     minor
-    OPPOSITION      // 180º     MAJOR
 }
 
 model User {
@@ -68,9 +95,6 @@ model CelestialBody {
     // relations
     transits                Transit[]           // the coordinates at a specific time
 
-    interpretations         Interpretation[]    @relation("BodyInterpretations")
-    aspectInterpretations   Interpretation[]    @relation("AspectedBodyInterpretations")
-
     // domicile                ZodiacSign?         // the sign it governs
 }
 
@@ -90,10 +114,7 @@ model ZodiacSign {
     // mode            Modality
 
     // relations
-
     transits        Transit[]           // for chart placements
-
-    interpretations Interpretation[]    @relation("SignInterpretations")
 
     // ruler           CelestialBody       @relation(fields: [rulerId], references: [id])
     // rulerId         String              @unique
@@ -114,8 +135,6 @@ model House {
     // relations
 
     transits        Transit[]
-
-    interpretations Interpretation[]    @relation("HouseInterpretations")
 }
 
 model Star {
@@ -177,11 +196,14 @@ model Transit {
 model Interpretation { // lookup text
     /** 
     * Each interpretation is defined by relations with 
-    * celestial body, sign, and house. 
-    * 
-    * Aspect interpretations require 2 celestial bodies
-    * and the aspect type (calculated elsewehere).
-    * e.g. body_1_id, body_2_id, aspect_type_id
+    * celestial body, sign, and house. However, to avoid a 
+    * long, fragile unique constraint of foreign key identifiers
+    * (among other problems), we will instead create a JSON
+    * Metadata column that contains arrays of keys corresponding
+    * to objects in the CelestialBody, ZodiacSign, and House tables,
+    * with safety enforced via enum slugs for each entity.
+    * e.g. ["SUN", "SIGN_ALPHA"] or ["SUN", "HOUSE_01"] or ["SUN", "SIGN_ALPHA", "HOUSE_01"]
+    * Or for aspects: ["PLANET_B", "SQUARE", "PLANET_C"]
     *
     * v0.0: interpretation table exists
     * v0.1: interpretations for sun in each sign (+12)
@@ -197,32 +219,22 @@ model Interpretation { // lookup text
     *   - interpretations for minor aspects (quincunx, semi-sextile, semi-square, sesquiquadrate...)
     *   - interpretations for sign-house combos (without a celestial body)
     *
-    * 1. Check for all 3 (celestial body, sign, house).
-    * 2. Check for celestial body + sign. (MOST COMMON)
-    * 3. Check for celestial body + house.
-    * 4. Check for sign + house. (UNCOMMON)
+    * 1. Check for all 3 keys: 
+    *       - celestial body, sign, house
+    *       - aspecting celestial body, aspect type, aspected celestial body
+    * 2. Check for celestial body + sign, AND celestial body + house. (MOST COMMON)
+    *    No fallback for aspect key arrays that are missing an interpretation.
+    * 3. Check for sign + house. (UNCOMMON)
     */
+
     id              String          @id @default(cuid())
     title           String?         // e.g. Sun in Aries (example not applicable to this system, obviously!)
     text            String          // the body text of the interpretation
 
-    // 1. core relations
-    celestialBodyId String?
-    celestialBody   CelestialBody?  @relation("BodyInterpretations", fields: [celestialBodyId], references: [id])
+    // new, improved lookup arrays!
+    matchKeys       EntitySlug[]
 
-    zodiacSignId    String?
-    zodiacSign      ZodiacSign?     @relation("SignInterpretations", fields: [zodiacSignId], references: [id])
-
-    houseId         String?
-    house           House?          @relation("HouseInterpretations", fields: [houseId], references: [id])
-
-    // 2. aspect / complex relationship fields
-    aspectType      AspectType
-
-    aspectedBodyId  String?
-    aspectedBody    CelestialBody? @relation("AspectedBodyInterpretations", fields: [aspectedBodyId], references: [id])
-
-    @@unique([celestialBodyId, zodiacSignId, houseId, aspectType, aspectedBodyId])
+    @@index([matchKeys], type: Gin)
 }
 
 /** 
