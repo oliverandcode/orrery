@@ -48,14 +48,16 @@ enum AspectType {   // ordered by degree
 }
 
 model CelestialBody {
-    id                  String              @id @default(cuid())
-    name                String              @unique
-    type                CelestialBodyType
-    astroLore           String              // astrological role
-    astroData           String              // astronomical description
-                                            // (esp. observable characteristics from the surface of TRAPPIST-1e)
+    id          String              @id @default(cuid())
+    name        String              @unique
+    type        CelestialBodyType
+    astroLore   String              // astrological role
+    astroData   String              // astronomical description
+                                    // (esp. observable characteristics from the surface of TRAPPIST-1e)
 
     // relations
+
+    positions               CalculatedPosition[]
 
     // domicile                ZodiacSign?
 
@@ -72,13 +74,16 @@ model ZodiacSign {
     astroData       String              // astronomical description (i.e. star configuration)
     element         ClassicalElement
     mode            Modality
+    symbol          String              // e.g. The Ram, for Aries
 
     // relations
 
-    // ruler           CelestialBody       @relation(fields: [rulerId], references: [id])
-    // rulerId         String              @unique
+    positions       CalculatedPosition[]
 
     // interpretations Interpretation[]    @relation("SignInterpretations")
+
+    // ruler           CelestialBody       @relation(fields: [rulerId], references: [id])
+    // rulerId         String              @unique
 }
 
 model House {
@@ -88,6 +93,8 @@ model House {
     astroLore   String  // astrological domain
 
     // relations
+
+    positions       CalculatedPosition[]
 
     // interpretations Interpretation[]    @relation("HouseInterpretations")
 }
@@ -105,14 +112,42 @@ model Star {
 
 model Chart {
     id                  String      @id @default(cuid())
-    dateOnly            DateTime    @db.Date
-    timeOnly            DateTime    @db.Time    // users may not know time of day
+    dateTime            DateTime
     planetaryLatitude   Float
     planetaryLongitude  Float
     createdAt           DateTime    @default(now())
     updatedAt           DateTime    @updatedAt
 
     // relations
+
+    positions CalculatedPosition[]
+
+    // user
+}
+
+model CalculatedPosition {
+    id                  String          @id @default(cuid())
+
+    // astronomical computations
+    eclipticLongitude   Float
+
+    // relations
+
+    // defining relationship (which chart and body)
+    chartId             String
+    chart               Chart           @relation(fields: [chartId], references: [id])
+
+    celestialBodyId     String
+    celestialBody       CelestialBody   @relation(fields: [celestialBodyId], references: [id])
+
+    // placements
+    zodiacSignId        String
+    zodiacSign          ZodiacSign      @relation(fields: [zodiacSignId], references: [id])
+
+    houseId             String
+    house               House           @relation(fields: [houseId], references: [id])
+
+    @@unique([chartId, celestialBodyId])    // a planet can only have one placement per chart
 }
 
 
@@ -121,6 +156,10 @@ model User {
     email               String  @unique
     name                String?
     password            String?
+
+    // relations
+
+    // charts
 }
 
 /** 
