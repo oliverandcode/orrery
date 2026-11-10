@@ -110,9 +110,9 @@ model CelestialBody {
                                     // (esp. observable characteristics from the surface of TRAPPIST-1e)
 
     // relations
-    transits                Transit[]           // the coordinates at a specific time
+    transits    Transit[]       // the coordinates at a specific time
 
-    // domicile                ZodiacSign?         // the sign it governs
+    // domiciles   ZodiacSign[]   // the signs it governs
 }
 
 model ZodiacSign {
@@ -128,14 +128,14 @@ model ZodiacSign {
     astroLore       String              // astrological archetype
     astroData       String              // astronomical description (i.e. star configuration)
 
-    elementType     ElementType
-    mode            Modality
+    elementType     ElementType         // may change this or get rid of this field entirely
+    mode            Modality            // may change this or get rid of this field entirely
 
     // relations
-    transits        Transit[]           // for chart placements
+    transits        Transit[]           // chart placements
 
-    // ruler           CelestialBody       @relation(fields: [rulerId], references: [id])
-    // rulerId         String              @unique
+    // rulerId         String?
+    // ruler           CelestialBody?      @relation(fields: [rulerId], references: [id])
 }
 
 model House {
@@ -152,7 +152,6 @@ model House {
     ascendantOffset Float   @unique
 
     // relations
-
     transits        Transit[]
 }
 
@@ -178,7 +177,6 @@ model Chart {
     ascendantLongitude  Float       // eastern horizon location on the ecliptic
 
     // relations
-
     transits            Transit[]
 
     userId              String
@@ -210,8 +208,6 @@ model Transit {
     @@unique([chartId, celestialBodyId])    // a planet can only have one placement per chart
 }
 
-
-
 model Interpretation { // lookup text
     /*
     * Each interpretation is defined by relations with 
@@ -221,29 +217,10 @@ model Interpretation { // lookup text
     * Metadata column that contains arrays of keys corresponding
     * to objects in the CelestialBody, ZodiacSign, and House tables,
     * with safety enforced via enum slugs for each entity.
-    * e.g. ["SUN", "SIGN_ALPHA"] or ["SUN", "HOUSE_01"] or ["SUN", "SIGN_ALPHA", "HOUSE_01"]
-    * Or for aspects: ["PLANET_B", "SQUARE", "PLANET_C"]
-    *
-    * v0.0: interpretation table exists
-    * v0.1: interpretations for sun in each sign (+12)
-    * v0.2: interpretations for inner planets (b, c, d) 
-    *       in each sign (+36)
-    * v0.3: interpretations for outer planets (f, g, h)
-    *       in each sign (+36)
-    * v0.4: interpretations for sun and planets in each house (+84)
-    * beyond: 
-    *   - interpretations for sun and planets in each sign/house combo (likely never complete! very large number)
-    *   - data structure added for aspect interpretations
-    *   - interpretations for major aspects (conjunction, opposition, trine, square, sextile)
-    *   - interpretations for minor aspects (quincunx, semi-sextile, semi-square, sesquiquadrate...)
-    *   - interpretations for sign-house combos (without a celestial body)
-    *
-    * 1. Check for all 3 keys: 
-    *       - celestial body, sign, house
-    *       - aspecting celestial body, aspect type, aspected celestial body
-    * 2. Check for celestial body + sign, AND celestial body + house. (MOST COMMON)
-    *    No fallback for aspect key arrays that are missing an interpretation.
-    * 3. Check for sign + house. (UNCOMMON)
+    * e.g. ["TRAPPIST_1_SUN", "SIGN_ALPHA"]             ...celestial body in a sign (e.g. "Sun in Aries")
+    * or ["TRAPPIST_1_SUN", "HOUSE_01"]                 ...celestial body in a house (e.g. "Sun in the first house")
+    * or ["TRAPPIST_1_SUN", "SIGN_ALPHA", "HOUSE_01"]   ...celestial body in a sign AND house (e.g. "Sun in Aries in the first house")
+    * or for aspects: ["TRAPPIST_1B", "ASPECT_SQUARE", "TRAPPIST_1C"]   ...body squares another body (e.g. "Venus squares Mars")
     */
 
     id              String          @id @default(cuid())
@@ -285,26 +262,12 @@ model Interpretation { // lookup text
 *
 * bodies:   description of physical characteristics and orbit/behavior, with
 *           particular focus on observable traits from TRAPPIST-1e POV
-*           - specs, space_specs (specs is short for specifications, which is technically inaccurate)
-*           - mechanics (might not cover everything)
-*           - observable (might not cover everything)
-*           - stats, space_stats, physical_stats (maybe?)
-*           - system_stats (maybe?)
 *
 * signs:    description of the stars/constellations in each ecliptic segment,
 *           still figuring this out (have not "drawn" the constellations yet)
-*           - specs (technically inaccurate)
-*           - stats (this sounds like it's the ecliptic boundaries etc)
-*           - data, astro_data
 *
 * houses:   this is fixed based on planetary position/time of year, so it may 
 *           not need an astronomical description. however, the first house 
 *           (eastern horizon) still moves through the signs, and maybe this 
 *           is where we can explain how TRAPPIST-1e is tidally locked.
-*
-* what do we call the picture each constellation is supposed to draw?
-* i've been considering naming them all after pop stars
-*       - symbol*
-*       - image
-*       - archetype
 */
