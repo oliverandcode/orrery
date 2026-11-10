@@ -74,6 +74,21 @@ enum CelestialBodyType {
     */
 }
 
+// NOTE: future use
+enum ElementType {
+    AIR
+    EARTH
+    FIRE
+    WATER
+}
+
+// NOTE: future use
+enum Modality {
+    CARDINAL
+    FIXED
+    MUTABLE
+}
+
 model User {
     id                  String  @id @default(cuid())
     email               String  @unique
@@ -110,8 +125,8 @@ model ZodiacSign {
     astroLore       String              // astrological archetype
     astroData       String              // astronomical description (i.e. star configuration)
 
-    // element         ClassicalElement
-    // mode            Modality
+    elementType     ElementType
+    mode            Modality
 
     // relations
     transits        Transit[]           // for chart placements
