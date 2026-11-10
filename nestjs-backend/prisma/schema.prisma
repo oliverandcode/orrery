@@ -1,5 +1,6 @@
 generator client {
-    provider = "prisma-client-js"
+    provider = "prisma-client"
+    output   = "./generated"
 }
 
 datasource db {
@@ -140,7 +141,7 @@ model House {
     number          Int     @unique
     astroLore       String  // astrological domain
 
-    /** 
+    /*
     * The angular distance offset of the House's starting longitude
     * on the ecliptic plane from the Ascendant (first house) cusp. 
     * i.e. First House: 0, Second House: 30, Third House = 60, etc
@@ -209,7 +210,7 @@ model Transit {
 
 
 model Interpretation { // lookup text
-    /** 
+    /*
     * Each interpretation is defined by relations with 
     * celestial body, sign, and house. However, to avoid a 
     * long, fragile unique constraint of foreign key identifiers
@@ -252,7 +253,7 @@ model Interpretation { // lookup text
     @@index([matchKeys], type: Gin)
 }
 
-/** 
+/*
 * naming descriptive text in each table
 *
 * UNIFIED OPTION (all models):  
