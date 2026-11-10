@@ -2,6 +2,7 @@ import "dotenv/config";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, EntitySlug } from "./generated/client";
+import { CELESTIAL_BODIES, HOUSES, ZODIAC_SIGNS } from "./seed-data";
 
 const connectionString = `${process.env.DATABASE_URL}`;
 const pool = new Pool({ connectionString });
@@ -9,10 +10,39 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-    // here be the seed data
-    // const
+    console.log("Starting database seeding...");
 
-    console.log(); // confirm seeding step complete
+    // seed celestial bodies (one by one)
+    for (const body of CELESTIAL_BODIES) {
+        await prisma.celestialBody.upsert({
+            where: { slug: body.slug },
+            update: {}, // do nothing if the body has already been created
+            create: body,
+        })
+    };
+    console.log("Seeding celestial bodies: complete.");
+
+    // seed zodiac signs (one by one)
+    for (const sign of ZODIAC_SIGNS) {
+        await prisma.zodiacSign.upsert({
+            where: { slug: sign.slug },
+            update: {}, // do nothing if the sign has already been created
+            create: sign,
+        })
+    };
+    console.log("Seeding zodiac signs: complete.");
+
+    // seed astrological houses (one by one)
+    for (const house of HOUSES) {
+        await prisma.house.upsert({
+            where: { slug: house.slug },
+            update: {}, // do nothing if the house has already been created
+            create: house,
+        })
+    };
+    console.log("Seeding astrological houses: complete.");
+
+    console.log("All seeding: complete."); // confirm seeding step complete
 }
 
 main()
