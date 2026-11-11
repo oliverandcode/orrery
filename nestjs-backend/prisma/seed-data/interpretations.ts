@@ -99,104 +99,106 @@ function createInterpretation(input: InterpretationInput): Prisma.Interpretation
     }
 };
 
-export const INTERPRETATIONS: Prisma.InterpretationCreateInput[] = [
-    // sun interpretations
-    createInterpretation({
+const INTERPRETATION_DATA: InterpretationInput[] = [
+    // body in sign interpretations
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_ALPHA,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_BRAVO,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_CHARLIE,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_DELTA,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_ECHO,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_FOXTROT,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_GOLF,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_HOTEL,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_INDIA,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_JULIET,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_KILO,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
-    createInterpretation({
+    },
+    {
         type: "BODY_IN_SIGN",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_LIMA,
         rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    }),
+    },
     // body in house
-    createInterpretation({
+    {
         type: "BODY_IN_HOUSE",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         house: HOUSE_DICT.HOUSE_01,
         rawText: ({ body, house }) => `Interpretation text for ${body.name} in the ${house.name}.`,
-    }),
+    },
     // body in sign and house
-    createInterpretation({
+    {
         type: "BODY_IN_SIGN_AND_HOUSE",
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_ALPHA,
         house: HOUSE_DICT.HOUSE_01,
         rawText: ({ body, house, sign }) => `Interpretation text for ${body.name} in ${sign.name} in the ${house.name}.`,
-    }),
+    },
     // aspect
-    createInterpretation({
+    {
         type: "ASPECT",
         bodyA: CELESTIAL_BODY_DICT.TRAPPIST_1B,
         aspect: EntitySlug.ASPECT_CONJUNCT,
         bodyB: CELESTIAL_BODY_DICT.TRAPPIST_1C,
         rawText: ({ bodyA, aspect, bodyB }) => `When ${bodyA.name} is ${aspect} ${bodyB.name}...`,
-    }),
+    },
 ];
+
+export const INTERPRETATIONS: Prisma.InterpretationCreateInput[] = INTERPRETATION_DATA.map(createInterpretation);
 
 /*
 * NOTE: Interpretation table contains JSON column ("matchKeys") with a lookup array to find specific interpretations
