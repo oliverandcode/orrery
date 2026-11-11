@@ -53,17 +53,17 @@ enum EntitySlug {
 
     // NOTE: future use
     // Aspects (ordered by degree)
-    ASPECT_CONJUNCTION     // 0º       MAJOR
-    ASPECT_SEMISEXTILE     // 30º      minor
-    ASPECT_SEMISQUARE      // 45º      minor
-    ASPECT_SEXTILE         // 60º      MAJOR
-    ASPECT_QUINTILE        // 72º      minor
-    ASPECT_SQUARE          // 90º      MAJOR
-    ASPECT_TRINE           // 120º     MAJOR
-    ASPECT_SESQUIQUADRATE  // 135º     minor
-    ASPECT_BIQUINTILE      // 144º     minor
-    ASPECT_QUINCUNX        // 150º     minor
-    ASPECT_OPPOSITION      // 180º     MAJOR
+    ASPECT_CONJUNCT         // 0º       MAJOR
+    ASPECT_SEMISEXTILE      // 30º      minor
+    ASPECT_SEMISQUARE       // 45º      minor
+    ASPECT_SEXTILE          // 60º      MAJOR
+    ASPECT_QUINTILE         // 72º      minor
+    ASPECT_SQUARE           // 90º      MAJOR
+    ASPECT_TRINE            // 120º     MAJOR
+    ASPECT_SESQUIQUADRATE   // 135º     minor
+    ASPECT_BIQUINTILE       // 144º     minor
+    ASPECT_QUINCUNX         // 150º     minor
+    ASPECT_OPPOSITE         // 180º     MAJOR
 }
 
 enum CelestialBodyType {
