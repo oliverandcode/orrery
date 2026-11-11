@@ -227,8 +227,24 @@ model Interpretation { // lookup text
     title           String?         // e.g. Sun in Aries (example not applicable to this system, obviously!)
     text            String          // the body text of the interpretation
 
-    // new, improved lookup arrays!
-    matchKeys       EntitySlug[]
+    /* 
+    * not compatible with Prisma's upsert
+    * not REALLY enforceable as unique
+    * BUT: helpful for polymorphic queries!
+    */
+    matchKeys       EntitySlug[]    @unique
+
+    /*
+    * generated systematically from sorted array of EntitySlug enums
+    * e.g. [TRAPPIST_1_SUN, SIGN_ALPHA]
+    * and [SIGN_ALPHA, TRAPPIST_1_SUN]
+    * both become "SIGN_ALPHA_TRAPPIST_1_SUN"
+    * and [TRAPPIST_1_SUN, SIGN_ALPHA, HOUSE_01]
+    * becomes "HOUSE_01_SIGN_ALPHA_TRAPPIST_1_SUN"
+    * alphabetically sorted for simplicity
+    */
+    lookupKey       String          @unique
+
 
     @@index([matchKeys], type: Gin)
 }
