@@ -1,5 +1,5 @@
-import { Prisma } from "../generated/client";
-import { CelestialBodyType, EntitySlug } from "../generated/enums";
+import { Prisma } from "../../generated/client";
+import { CelestialBodyType, EntitySlug } from "../../generated/enums";
 
 // helper function to validate type
 const createCelestialBodyDict = <K extends EntitySlug, T extends Record<K, Prisma.CelestialBodyCreateInput>>(data: T & Record<K, Prisma.CelestialBodyCreateInput>) => data;

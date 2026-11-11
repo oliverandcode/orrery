@@ -1,5 +1,5 @@
-import { DEGREES_PER_SECTION } from "./constants";
-import { ElementType, EntitySlug, Modality, Prisma } from "../generated/client";
+import { DEGREES_PER_SECTION } from "../constants";
+import { ElementType, EntitySlug, Modality, Prisma } from "../../generated/client";
 
 // helper function to validate type
 const createZodiacSignDict = <K extends EntitySlug, T extends Record<K, Prisma.ZodiacSignCreateInput>>(data: T & Record<K, Prisma.ZodiacSignCreateInput>) => data;

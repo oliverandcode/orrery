@@ -1,7 +1,7 @@
-import { InterpretationInput } from "../types";
+import { InterpretationInput } from "../../types";
 import { CELESTIAL_BODY_DICT } from "../celestial-bodies";
-import { EntitySlug } from "../../generated/enums";
-import { formatAspect } from "../builders";
+import { EntitySlug } from "../../../generated/enums";
+import { formatAspect } from "../../builders";
 
 // MAJOR ASPECTS
 

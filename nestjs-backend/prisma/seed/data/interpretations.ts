@@ -1,6 +1,6 @@
-import { Prisma } from "../generated/client";
-import { InterpretationInput } from "./types";
-import { createInterpretation } from "./builders";
+import { Prisma } from "../../generated/client";
+import { InterpretationInput } from "../types";
+import { createInterpretation } from "../builders";
 import { SUN_IN_SIGN, T1B_IN_SIGN, T1C_IN_SIGN, T1D_IN_SIGN, T1F_IN_SIGN, T1G_IN_SIGN, T1H_IN_SIGN } from "./interpretations/body-in-sign";
 import { SUN_IN_HOUSE, T1B_IN_HOUSE, T1C_IN_HOUSE, T1D_IN_HOUSE, T1F_IN_HOUSE, T1G_IN_HOUSE, T1H_IN_HOUSE } from "./interpretations/body-in-house";
 import { SUN_IN_SIGN_AND_HOUSE, T1B_IN_SIGN_AND_HOUSE, T1C_IN_SIGN_AND_HOUSE, T1D_IN_SIGN_AND_HOUSE, T1F_IN_SIGN_AND_HOUSE, T1G_IN_SIGN_AND_HOUSE, T1H_IN_SIGN_AND_HOUSE } from "./interpretations/body-in-sign-and-house";

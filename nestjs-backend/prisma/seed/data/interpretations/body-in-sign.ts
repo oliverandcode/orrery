@@ -1,4 +1,4 @@
-import { InterpretationInput } from "../types";
+import { InterpretationInput } from "../../types";
 import { CELESTIAL_BODY_DICT } from "../celestial-bodies";
 import { ZODIAC_SIGN_DICT } from "../zodiac-signs";
 

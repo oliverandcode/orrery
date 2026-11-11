@@ -2,10 +2,10 @@ import "dotenv/config";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/client";
-import { ZODIAC_SIGNS } from "./seed-data/zodiac-signs";
-import { CELESTIAL_BODIES } from "./seed-data/celestial-bodies";
-import { HOUSES } from "./seed-data/houses";
-import { INTERPRETATIONS } from "./seed-data/interpretations";
+import { CELESTIAL_BODIES } from "./seed/data/celestial-bodies";
+import { ZODIAC_SIGNS } from "./seed/data/zodiac-signs";
+import { HOUSES } from "./seed/data/houses";
+import { INTERPRETATIONS } from "./seed/data/interpretations";
 
 const connectionString = `${process.env.DATABASE_URL}`;
 const pool = new Pool({ connectionString });

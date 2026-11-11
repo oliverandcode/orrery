@@ -1,6 +1,5 @@
-import { Prisma } from "../generated/client";
-import { EntitySlug } from "../generated/enums";
-import { DEGREES_PER_SECTION } from "./constants";
+import { EntitySlug, Prisma } from "../../generated/client";
+import { DEGREES_PER_SECTION } from "../constants";
 
 // helper function to validate type
 const createHouseDict = <K extends EntitySlug, T extends Record<K, Prisma.HouseCreateInput>>(data: T & Record<K, Prisma.HouseCreateInput>) => data;
