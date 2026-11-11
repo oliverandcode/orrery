@@ -140,6 +140,7 @@ model ZodiacSign {
 
 model House {
     id              String      @id @default(cuid())
+    name            String      @unique // display name (e.g. "Third House")
     slug            EntitySlug  @unique // immutable human-readable reference (used in Interpretation matchKeys)
     number          Int         @unique
     astroLore       String      // astrological domain
