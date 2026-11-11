@@ -1,5 +1,5 @@
+import { EntitySlug, Prisma } from "../generated/client";
 import { CELESTIAL_BODY_DICT } from "./celestial-bodies";
-import { ElementType, EntitySlug, Modality, Prisma } from "../generated/client";
 import { ZODIAC_SIGN_DICT } from "./zodiac-signs";
 
 
@@ -121,11 +121,4 @@ export const BODY_IN_SIGN_INTERPRETATIONS: Prisma.InterpretationCreateInput[] = 
 *   - interpretations for minor aspects (quincunx, semi-sextile, semi-square, sesquiquadrate...)
 *   - interpretations for sign-house combos (without a celestial body)
 *
-* LOOKUP ALGORITHM:
-* 1. Check for all 3 keys: 
-*       - celestial body, sign, house
-*       - aspecting celestial body, aspect type, aspected celestial body
-* 2. Check for celestial body + sign, AND celestial body + house. (MOST COMMON)
-*    WARNING: No fallback for aspect key arrays that are missing an interpretation. Not sure if this is a bug yet or not. 
-* 3. Check for sign + house. (UNCOMMON)
 */
