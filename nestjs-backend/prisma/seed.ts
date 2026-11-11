@@ -13,39 +13,56 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-    console.log("Starting database seeding...");
+    console.log("Starting database seeding...\n");
 
     // seed celestial bodies (one by one)
+    console.log("Seeding celestial bodies...");
     for (const body of CELESTIAL_BODIES) {
         await prisma.celestialBody.upsert({
             where: { slug: body.slug },
             update: {}, // do nothing if the body has already been created
             create: body,
         });
+        console.log(`\tSeeded ${body.name}.`);
+        console.log(`\tSlug: ${body.slug}`);
+        console.log(`\tAstrological role: ${body.astroLore}`);
+        console.log(`\tAstronomical description: ${body.astroData}`);
     };
-    console.log("Seeding celestial bodies: complete.");
+    console.log("Seeding celestial bodies: complete.\n");
 
     // seed zodiac signs (one by one)
+    console.log("Seeding zodiac signs...");
     for (const sign of ZODIAC_SIGNS) {
         await prisma.zodiacSign.upsert({
             where: { slug: sign.slug },
             update: {}, // do nothing if the sign has already been created
             create: sign,
         });
+        console.log(`\tSeeded sign ${sign.name}.`);
+        console.log(`\tSlug: ${sign.slug}`);
+        console.log(`\tCusp longitude: ${sign.startLongitude}\º`);
+        console.log(`\tAstrological archetype/expression: ${sign.astroLore}`);
+        console.log(`\tDescription of star configuration: ${sign.astroData}`);
     };
-    console.log("Seeding zodiac signs: complete.");
+    console.log("Seeding zodiac signs: complete.\n");
 
     // seed astrological houses (one by one)
+    console.log("Seeding astrological houses...");
     for (const house of HOUSES) {
         await prisma.house.upsert({
             where: { slug: house.slug },
             update: {}, // do nothing if the house has already been created
             create: house,
         });
+        console.log(`\tSeeded the ${house.name}.`);
+        console.log(`\tSlug: ${house.slug}`);
+        console.log(`\tOffset from ascendant cusp: ${house.ascendantOffset}\º`);
+        console.log(`\tAstrological domain: ${house.astroLore}`);
     };
-    console.log("Seeding astrological houses: complete.");
+    console.log("Seeding astrological houses: complete.\n");
 
     // seed interpretations (one by one)
+    console.log("Seeding placement interpretations...");
     for (const interpretation of INTERPRETATIONS) {
         // the idempotent upsert method using a lookup string 
         // composed of systematically sorted and joined matchKey enums
@@ -54,8 +71,11 @@ async function main() {
             update: {}, // do nothing if the interpretation has already been created
             create: interpretation,
         });
+        console.log(`\tSeeded \"${interpretation.title}.\"`);
+        console.log(`\tLookup key string: ${interpretation.lookupKey}`);
+        console.log(`\tText of interpretation: ${interpretation.text}`);
     };
-    console.log("Seeding interpretations: complete.");
+    console.log("Seeding interpretations: complete.\n");
 
     console.log("All seeding: complete."); // confirm seeding step complete
 }
