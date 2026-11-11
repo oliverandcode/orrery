@@ -1,0 +1,308 @@
+generator client {
+    provider = "prisma-client"
+    output   = "./generated"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+generator pothos {
+    provider    = "prisma-pothos-types"
+    prismaUtils = true
+}
+
+// immutable slugs for use in Interpretation table key matching
+enum EntitySlug {
+    // Celestial Bodies
+    TRAPPIST_1_SUN
+    TRAPPIST_1B
+    TRAPPIST_1C
+    TRAPPIST_1D
+    TRAPPIST_1F
+    TRAPPIST_1G
+    TRAPPIST_1H
+
+    // Zodiac signs
+    SIGN_ALPHA
+    SIGN_BRAVO
+    SIGN_CHARLIE
+    SIGN_DELTA
+    SIGN_ECHO
+    SIGN_FOXTROT
+    SIGN_GOLF
+    SIGN_HOTEL
+    SIGN_INDIA
+    SIGN_JULIET
+    SIGN_KILO
+    SIGN_LIMA
+
+    // Houses
+    HOUSE_01
+    HOUSE_02
+    HOUSE_03
+    HOUSE_04
+    HOUSE_05
+    HOUSE_06
+    HOUSE_07
+    HOUSE_O8
+    HOUSE_09
+    HOUSE_10
+    HOUSE_11
+    HOUSE_12
+
+    // Aspects (ordered by degree)
+    ASPECT_CONJUNCT         // 0º       MAJOR   1st
+    ASPECT_SEMISEXTILE      // 30º      minor   ...7th
+    // ASPECT_DECILE           // 36º      minor   ...14th aka SEMIQUINTILE
+    // ASPECT_NOVILE           // 40º      minor   ...13th
+    ASPECT_SEMISQUARE       // 45º      minor   ...8th  aka OCTILE
+    // ASPECT_SEPTILE          // 51º      minor   ...12th
+    ASPECT_SEXTILE          // 60º      MAJOR   5th
+    ASPECT_QUINTILE         // 72º      minor   ...10th
+    ASPECT_SQUARE           // 90º      MAJOR   3rd
+    ASPECT_TRINE            // 120º     MAJOR   4th
+    ASPECT_SESQUIQUADRATE   // 135º     minor   ...9th  aka TRIOCTILE
+    ASPECT_BIQUINTILE       // 144º     minor   ...11th
+    ASPECT_QUINCUNX         // 150º     minor   ...6th  aka INCONJUNCT
+    ASPECT_OPPOSITE         // 180º     MAJOR   2nd
+
+    // Aspects (ordered by priority)
+    // ASPECT_CONJUNCT         // 0º       MAJOR   1st
+    // ASPECT_OPPOSITE         // 180º     MAJOR   2nd
+    // ASPECT_SQUARE           // 90º      MAJOR   3rd
+    // ASPECT_TRINE            // 120º     MAJOR   4th
+    // ASPECT_SEXTILE          // 60º      MAJOR   5th
+    // ASPECT_QUINCUNX         // 150º     minor   ...6th  aka INCONJUNCT
+    // ASPECT_SEMISEXTILE      // 30º      minor   ...7th
+    // ASPECT_SEMISQUARE       // 45º      minor   ...8th  aka OCTILE
+    // ASPECT_SESQUIQUADRATE   // 135º     minor   ...9th  aka TRIOCTILE
+    // ASPECT_QUINTILE         // 72º      minor   ...10th
+    // ASPECT_BIQUINTILE       // 144º     minor   ...11th
+    // ASPECT_SEPTILE          // 51º      minor   ...12th
+    // ASPECT_NOVILE           // 40º      minor   ...13th
+    // ASPECT_DECILE           // 36º      minor   ...14th aka SEMIQUINTILE
+}
+
+enum CelestialBodyType {
+    LUMINARY
+    PLANET
+    /** later enums, maybe: 
+    *   ASTEROID
+    *   CALCULATED_POINT (nodes, apogees, etc)
+    */
+}
+
+// NOTE: future use
+enum ElementType {
+    AIR
+    EARTH
+    FIRE
+    WATER
+}
+
+// NOTE: future use
+enum Modality {
+    CARDINAL
+    FIXED
+    MUTABLE
+}
+
+model User {
+    id                  String  @id @default(cuid())
+    email               String  @unique
+    name                String?
+    password            String?
+
+    // relations
+    charts              Chart[]
+}
+
+model CelestialBody {
+    id          String              @id @default(cuid())
+    name        String              @unique // display name
+    slug        EntitySlug          @unique // immutable human-readable reference (used in Interpretation matchKeys)
+    type        CelestialBodyType
+    astroLore   String              // astrological role
+    astroData   String              // astronomical description
+                                    // (esp. observable characteristics from the surface of TRAPPIST-1e)
+
+    // relations
+    transits    Transit[]       // the coordinates at a specific time
+
+    // domiciles   ZodiacSign[]   // the signs it governs
+}
+
+model ZodiacSign {
+    id              String              @id @default(cuid())
+    name            String              @unique // display name
+    slug            EntitySlug          @unique // immutable human-readable reference (used in Interpretation matchKeys)
+    number          Int                 @unique // is this necessary?
+    symbol          String              // e.g. The Ram, for Aries
+
+    // static and absolute position on the ecliptic plane
+    startLongitude  Float               @unique
+
+    astroLore       String              // astrological archetype
+    astroData       String              // astronomical description (i.e. star configuration)
+
+    elementType     ElementType         // may change this or get rid of this field entirely
+    mode            Modality            // may change this or get rid of this field entirely
+
+    // relations
+    transits        Transit[]           // chart placements
+
+    // rulerId         String?
+    // ruler           CelestialBody?      @relation(fields: [rulerId], references: [id])
+}
+
+model House {
+    id              String      @id @default(cuid())
+    name            String      @unique // display name (e.g. "Third House")
+    slug            EntitySlug  @unique // immutable human-readable reference (used in Interpretation matchKeys)
+    number          Int         @unique
+    astroLore       String      // astrological domain
+
+    /*
+    * The angular distance offset of the House's starting longitude
+    * on the ecliptic plane from the Ascendant (first house) cusp. 
+    * i.e. First House: 0, Second House: 30, Third House = 60, etc
+    */
+    ascendantOffset Float   @unique
+
+    // relations
+    transits        Transit[]
+}
+
+model Star {
+    id                  String  @id @default(cuid())
+    gaiaDr3Id           String  @unique     // Gaia Star Catalogue DR3 ID
+    name                String?
+    eclipticLongitude   Float
+    eclipticLatitude    Float
+    apparentMagnitude   Float
+
+    // relations
+}
+
+model Chart {
+    id                  String      @id @default(cuid())
+    dateTime            DateTime
+    planetaryLatitude   Float       // chart (birth or event) location
+    planetaryLongitude  Float       // on the planet's surface
+    createdAt           DateTime    @default(now())
+    updatedAt           DateTime    @updatedAt
+
+    ascendantLongitude  Float       // eastern horizon location on the ecliptic
+
+    // relations
+    transits            Transit[]
+
+    userId              String
+    user                User    @relation(fields: [userId], references: [id])
+}
+
+model Transit {
+    id                      String          @id @default(cuid())
+
+    // calculated coordinates of celestial body (from the planetary perspective)
+    celestialBodyLongitude  Float
+
+    // relations
+
+    // defining relationship (which chart and celestial body)
+    chartId                 String
+    chart                   Chart           @relation(fields: [chartId], references: [id])
+
+    celestialBodyId         String
+    celestialBody           CelestialBody   @relation(fields: [celestialBodyId], references: [id])
+
+    // placements (based on bodyLongitude and ascendantLongitude)
+    zodiacSignId            String
+    zodiacSign              ZodiacSign      @relation(fields: [zodiacSignId], references: [id])
+
+    houseId                 String
+    house                   House           @relation(fields: [houseId], references: [id])
+
+    @@unique([chartId, celestialBodyId])    // a planet can only have one placement per chart
+}
+
+model Interpretation { // lookup text
+    /*
+    * Each interpretation is defined by relations with 
+    * celestial body, sign, and house. However, to avoid a 
+    * long, fragile unique constraint of foreign key identifiers
+    * (among other problems), we will instead create a JSON
+    * Metadata column that contains arrays of keys corresponding
+    * to objects in the CelestialBody, ZodiacSign, and House tables,
+    * with safety enforced via enum slugs for each entity.
+    * e.g. ["TRAPPIST_1_SUN", "SIGN_ALPHA"]             ...celestial body in a sign (e.g. "Sun in Aries")
+    * or ["TRAPPIST_1_SUN", "HOUSE_01"]                 ...celestial body in a house (e.g. "Sun in the first house")
+    * or ["TRAPPIST_1_SUN", "SIGN_ALPHA", "HOUSE_01"]   ...celestial body in a sign AND house (e.g. "Sun in Aries in the first house")
+    * or for aspects: ["TRAPPIST_1B", "ASPECT_SQUARE", "TRAPPIST_1C"]   ...body squares another body (e.g. "Venus squares Mars")
+    */
+
+    id              String          @id @default(cuid())
+    title           String?         // e.g. Sun in Aries (example not applicable to this system, obviously!)
+    text            String          // the body text of the interpretation
+
+    /* 
+    * not compatible with Prisma's upsert
+    * not REALLY enforceable as unique
+    * BUT: helpful for polymorphic queries!
+    */
+    matchKeys       EntitySlug[]    @unique
+
+    /*
+    * generated systematically from sorted array of EntitySlug enums
+    * e.g. [TRAPPIST_1_SUN, SIGN_ALPHA]
+    * and [SIGN_ALPHA, TRAPPIST_1_SUN]
+    * both become "SIGN_ALPHA_TRAPPIST_1_SUN"
+    * and [TRAPPIST_1_SUN, SIGN_ALPHA, HOUSE_01]
+    * becomes "HOUSE_01_SIGN_ALPHA_TRAPPIST_1_SUN"
+    * alphabetically sorted for simplicity
+    */
+    lookupKey       String          @unique
+
+
+    @@index([matchKeys], type: Gin)
+}
+
+/*
+* naming descriptive text in each table
+*
+* UNIFIED OPTION (all models):  
+*   - astro_lore & astro_data 
+*           • favorite option
+*           • risk of autocomplete confusion
+*   - lore_astro & data_astro 
+*           • won't get confused with autocomplete
+*   - mythic_meaning & space_specs
+*           • no autocomplete confusion
+*           • also no star trek reference :(
+*
+* DISTINCT FIELD NAMES
+*
+* Mythological
+*
+* celestial bodies  (WHO/WHAT): role
+* zodiac signs      (HOW):      archetype
+* houses            (WHERE):    domain
+*
+* Astronomical
+*
+* bodies:   observable_traits
+* signs:    star_configuration
+* houses:   no field needed (probably)
+*
+* bodies:   description of physical characteristics and orbit/behavior, with
+*           particular focus on observable traits from TRAPPIST-1e POV
+*
+* signs:    description of the stars/constellations in each ecliptic segment,
+*           still figuring this out (have not "drawn" the constellations yet)
+*
+* houses:   this is fixed based on planetary position/time of year, so it may 
+*           not need an astronomical description. however, the first house 
+*           (eastern horizon) still moves through the signs, and maybe this 
+*           is where we can explain how TRAPPIST-1e is tidally locked.
+*/

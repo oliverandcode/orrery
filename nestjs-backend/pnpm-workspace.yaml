@@ -1,0 +1,12 @@
+allowBuilds:
+  '@apollo/protobufjs': true
+  '@parcel/watcher': true
+  esbuild: false
+  unrs-resolver: true
+  workerd: true
+permissions:
+  '@prisma/engines':
+    build: true
+  prisma:
+    build: true
+    skills: false
