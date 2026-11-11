@@ -35,9 +35,65 @@ function createBodyInSignEntry({ body, sign, rawText }: BodyInSignInput): Prisma
 };
 
 export const BODY_IN_SIGN_INTERPRETATIONS: Prisma.InterpretationCreateInput[] = [
+    // sun interpretations
     createBodyInSignEntry({
         body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
         sign: ZODIAC_SIGN_DICT.SIGN_ALPHA,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_BRAVO,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_CHARLIE,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_DELTA,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_ECHO,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_FOXTROT,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_GOLF,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_HOTEL,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_INDIA,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_JULIET,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_KILO,
+        rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
+    }),
+    createBodyInSignEntry({
+        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
+        sign: ZODIAC_SIGN_DICT.SIGN_LIMA,
         rawText: (cb, s) => `Interpretation text for ${cb.name} in ${s.name}.`
     }),
 ];
