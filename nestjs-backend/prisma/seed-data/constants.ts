@@ -1,2 +1,3 @@
 // all signs and houses are split into equal 30º segments (non-overlapping)
-export const degreeRange = 360.0 / 12; // 30.0º
+const NUMBER_OF_SIGNS_AND_HOUSES = 12;
+export const DEGREES_PER_SECTION = 360.0 / NUMBER_OF_SIGNS_AND_HOUSES; // 30º
