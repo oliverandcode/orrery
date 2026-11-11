@@ -9,7 +9,7 @@ export function createLookupKey(keys: EntitySlug[]): string {
 // formatting aspect enums for use in text
 // NOTE: kind of a hack, should probably create a table 
 // with display names and astrological descriptions
-function formatAspect(aspect: EntitySlug): string {
+export function formatAspect(aspect: EntitySlug): string {
     const stringAspect = aspect.toString();
     return stringAspect.replace(/^ASPECT_/, "").toLowerCase();
 }
@@ -22,7 +22,7 @@ export function createInterpretation(input: InterpretationInput): Prisma.Interpr
     // extract title and raw keys based on the specific combo
     switch (input.type) {
         case "BODY_IN_SIGN":
-            entryTitle = `${input.body.name} in ${input.sign.name}`;
+            entryTitle = `${input.body.name} in sign ${input.sign.name}`;
             rawKeys = [input.body.slug, input.sign.slug];
             break;
         case "BODY_IN_HOUSE":

@@ -51,19 +51,37 @@ enum EntitySlug {
     HOUSE_11
     HOUSE_12
 
-    // NOTE: future use
     // Aspects (ordered by degree)
-    ASPECT_CONJUNCT         // 0º       MAJOR
-    ASPECT_SEMISEXTILE      // 30º      minor
-    ASPECT_SEMISQUARE       // 45º      minor
-    ASPECT_SEXTILE          // 60º      MAJOR
-    ASPECT_QUINTILE         // 72º      minor
-    ASPECT_SQUARE           // 90º      MAJOR
-    ASPECT_TRINE            // 120º     MAJOR
-    ASPECT_SESQUIQUADRATE   // 135º     minor
-    ASPECT_BIQUINTILE       // 144º     minor
-    ASPECT_QUINCUNX         // 150º     minor
-    ASPECT_OPPOSITE         // 180º     MAJOR
+    ASPECT_CONJUNCT         // 0º       MAJOR   1st
+    ASPECT_SEMISEXTILE      // 30º      minor   ...7th
+    // ASPECT_DECILE           // 36º      minor   ...14th aka SEMIQUINTILE
+    // ASPECT_NOVILE           // 40º      minor   ...13th
+    ASPECT_SEMISQUARE       // 45º      minor   ...8th  aka OCTILE
+    // ASPECT_SEPTILE          // 51º      minor   ...12th
+    ASPECT_SEXTILE          // 60º      MAJOR   5th
+    ASPECT_QUINTILE         // 72º      minor   ...10th
+    ASPECT_SQUARE           // 90º      MAJOR   3rd
+    ASPECT_TRINE            // 120º     MAJOR   4th
+    ASPECT_SESQUIQUADRATE   // 135º     minor   ...9th  aka TRIOCTILE
+    ASPECT_BIQUINTILE       // 144º     minor   ...11th
+    ASPECT_QUINCUNX         // 150º     minor   ...6th  aka INCONJUNCT
+    ASPECT_OPPOSITE         // 180º     MAJOR   2nd
+
+    // Aspects (ordered by priority)
+    // ASPECT_CONJUNCT         // 0º       MAJOR   1st
+    // ASPECT_OPPOSITE         // 180º     MAJOR   2nd
+    // ASPECT_SQUARE           // 90º      MAJOR   3rd
+    // ASPECT_TRINE            // 120º     MAJOR   4th
+    // ASPECT_SEXTILE          // 60º      MAJOR   5th
+    // ASPECT_QUINCUNX         // 150º     minor   ...6th  aka INCONJUNCT
+    // ASPECT_SEMISEXTILE      // 30º      minor   ...7th
+    // ASPECT_SEMISQUARE       // 45º      minor   ...8th  aka OCTILE
+    // ASPECT_SESQUIQUADRATE   // 135º     minor   ...9th  aka TRIOCTILE
+    // ASPECT_QUINTILE         // 72º      minor   ...10th
+    // ASPECT_BIQUINTILE       // 144º     minor   ...11th
+    // ASPECT_SEPTILE          // 51º      minor   ...12th
+    // ASPECT_NOVILE           // 40º      minor   ...13th
+    // ASPECT_DECILE           // 36º      minor   ...14th aka SEMIQUINTILE
 }
 
 enum CelestialBodyType {

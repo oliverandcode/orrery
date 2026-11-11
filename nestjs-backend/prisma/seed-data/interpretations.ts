@@ -1,107 +1,44 @@
-import { EntitySlug, Prisma } from "../generated/client";
-import { createInterpretation } from "./builders";
-import { CELESTIAL_BODY_DICT } from "./celestial-bodies";
-import { HOUSE_DICT } from "./houses";
+import { Prisma } from "../generated/client";
 import { InterpretationInput } from "./types";
-import { ZODIAC_SIGN_DICT } from "./zodiac-signs";
+import { createInterpretation } from "./builders";
+import { SUN_IN_SIGN, T1B_IN_SIGN, T1C_IN_SIGN, T1D_IN_SIGN, T1F_IN_SIGN, T1G_IN_SIGN, T1H_IN_SIGN } from "./interpretations/body-in-sign";
+import { SUN_IN_HOUSE, T1B_IN_HOUSE, T1C_IN_HOUSE, T1D_IN_HOUSE, T1F_IN_HOUSE, T1G_IN_HOUSE, T1H_IN_HOUSE } from "./interpretations/body-in-house";
+import { SUN_IN_SIGN_AND_HOUSE, T1B_IN_SIGN_AND_HOUSE, T1C_IN_SIGN_AND_HOUSE, T1D_IN_SIGN_AND_HOUSE, T1F_IN_SIGN_AND_HOUSE, T1G_IN_SIGN_AND_HOUSE, T1H_IN_SIGN_AND_HOUSE } from "./interpretations/body-in-sign-and-house";
+import { CONJUNCTION, OPPOSITION, QUINCUNX, SEMISEXTILE, SEXTILE, SQUARE, TRINE } from "./interpretations/aspects";
 
 const INTERPRETATION_DATA: InterpretationInput[] = [
     // body in sign interpretations
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_ALPHA,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_BRAVO,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_CHARLIE,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_DELTA,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_ECHO,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_FOXTROT,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_GOLF,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_HOTEL,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_INDIA,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_JULIET,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_KILO,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
-    {
-        type: "BODY_IN_SIGN",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_LIMA,
-        rawText: ({ body, sign }) => `Interpretation text for ${body.name} in ${sign.name}.`,
-    },
+    ...SUN_IN_SIGN,
+    ...T1B_IN_SIGN,
+    ...T1C_IN_SIGN,
+    ...T1D_IN_SIGN,
+    ...T1F_IN_SIGN,
+    ...T1G_IN_SIGN,
+    ...T1H_IN_SIGN,
     // body in house
-    {
-        type: "BODY_IN_HOUSE",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        house: HOUSE_DICT.HOUSE_01,
-        rawText: ({ body, house }) => `Interpretation text for ${body.name} in the ${house.name}.`,
-    },
+    ...SUN_IN_HOUSE,
+    ...T1B_IN_HOUSE,
+    ...T1C_IN_HOUSE,
+    ...T1D_IN_HOUSE,
+    ...T1F_IN_HOUSE,
+    ...T1G_IN_HOUSE,
+    ...T1H_IN_HOUSE,
     // body in sign and house
-    {
-        type: "BODY_IN_SIGN_AND_HOUSE",
-        body: CELESTIAL_BODY_DICT.TRAPPIST_1_SUN,
-        sign: ZODIAC_SIGN_DICT.SIGN_ALPHA,
-        house: HOUSE_DICT.HOUSE_01,
-        rawText: ({ body, house, sign }) => `Interpretation text for ${body.name} in ${sign.name} in the ${house.name}.`,
-    },
-    // aspect
-    {
-        type: "ASPECT",
-        bodyA: CELESTIAL_BODY_DICT.TRAPPIST_1B,
-        aspect: EntitySlug.ASPECT_CONJUNCT,
-        bodyB: CELESTIAL_BODY_DICT.TRAPPIST_1C,
-        rawText: ({ bodyA, aspect, bodyB }) => `When ${bodyA.name} is ${aspect} ${bodyB.name}...`,
-    },
+    ...SUN_IN_SIGN_AND_HOUSE,
+    ...T1B_IN_SIGN_AND_HOUSE,
+    ...T1C_IN_SIGN_AND_HOUSE,
+    ...T1D_IN_SIGN_AND_HOUSE,
+    ...T1F_IN_SIGN_AND_HOUSE,
+    ...T1G_IN_SIGN_AND_HOUSE,
+    ...T1H_IN_SIGN_AND_HOUSE,
+    // aspect interpretations
+    ...CONJUNCTION,  
+    ...OPPOSITION,
+    ...SQUARE,
+    ...TRINE,
+    ...SEXTILE,
+    ...QUINCUNX,
+    ...SEMISEXTILE,
 ];
 
 export const INTERPRETATIONS: Prisma.InterpretationCreateInput[] = INTERPRETATION_DATA.map(createInterpretation);
@@ -113,20 +50,51 @@ export const INTERPRETATIONS: Prisma.InterpretationCreateInput[] = INTERPRETATIO
 * or ["TRAPPIST_1_SUN", "HOUSE_01"]                 ...celestial body in a house (e.g. "Sun in the first house")
 * or ["TRAPPIST_1_SUN", "SIGN_ALPHA", "HOUSE_01"]   ...celestial body in a sign AND house (e.g. "Sun in Aries in the first house")
 * or for aspects: ["TRAPPIST_1B", "ASPECT_SQUARE", "TRAPPIST_1C"]   ...body squares another body (e.g. "Venus squares Mars")
+* 
+* These arrays are systematically sorted and converted into strings joined on underscores to make them easier to query for uniqueness
+* 
+* e.g.  ["TRAPPIST_1_SUN", "SIGN_ALPHA"] => "SIGN_ALPHA_TRAPPIST_1_SUN"
+*       ["SIGN_ALPHA", "TRAPPIST_1_SUN"] => "SIGN_ALPHA_TRAPPIST_1_SUN" (same order to enforce unique combinations)
+*       ["TRAPPIST_1_SUN", "HOUSE_01"] => "HOUSE_01_TRAPPIST_1_SUN"
+*       ["TRAPPIST_1_SUN", "SIGN_ALPHA", "HOUSE_01"] => "HOUSE_01_SIGN_ALPHA_TRAPPIST_1_SUN"
+*       ["TRAPPIST_1B", "ASPECT_SQUARE", "TRAPPIST_1C"] => "ASPECT_SQUARE_TRAPPIST_1B_TRAPPIST_1C" (all aspects are mutual/bidirectional for now)
 *
-* PLANS for expansion:
-* v0.0: interpretation table exists
-* v0.1: interpretations for sun in each sign (+12)
-* v0.2: interpretations for inner planets (b, c, d) 
-*       in each sign (+36)
-* v0.3: interpretations for outer planets (f, g, h)
-*       in each sign (+36)
-* v0.4: interpretations for sun and planets in each house (+84)
-* beyond: 
-*   - interpretations for sun and planets in each sign/house combo (likely never complete! very large number)
-*   - data structure added for aspect interpretations
-*   - interpretations for major aspects (conjunction, opposition, trine, square, sextile)
-*   - interpretations for minor aspects (quincunx, semi-sextile, semi-square, sesquiquadrate...)
-*   - interpretations for sign-house combos (without a celestial body)
-*
+* PLANS FOR EXPANSION:
+* 
+* v0.0: interpretation table exists [x]
+* 
+* v0.1: body in sign (+84)          [ ]
+*       [x] sun (+12)
+*       [ ] b (+12)
+*       [ ] c (+12)
+*       [ ] d (+12)
+*       [ ] f (+12)
+*       [ ] g (+12)
+*       [ ] h (+12)
+* 
+* v0.2: body in house (+84)         [ ]
+*       [ ] sun (+12)
+*       [ ] b (+12)
+*       [ ] c (+12)
+*       [ ] d (+12)
+*       [ ] f (+12)
+*       [ ] g (+12)
+*       [ ] h (+12)
+* 
+* v0.3: major aspects (+105)        [ ]
+*       [ ] conjunction (+21)
+*       [ ] opposition (+21)
+*       [ ] square (+21)
+*       [ ] trine (+21)
+*       [ ] sextile (+21)
+* 
+*       * aspects are mutual, so
+*         don't recount combos
+* 
+* beyond:
+*   - ascendant + midheaven etc (prisma schema update)
+*   - body in sign AND house (up to 1008 possible)
+*       6 planets * 12 signs * 12 houses
+*   - minor aspects
+*   - sign + house (no body)
 */
